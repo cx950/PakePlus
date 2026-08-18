@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A股量化复盘 2026-08-06</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2128; --bd:#30363d;
+  --tx:#e6edf3; --dim:#8b949e; --faint:#6e7681;
+  --up:#ff4d4f; --down:#00d97e; --flat:#8b949e;
+  --ac:#58a6ff; --warn:#f0a020; --grid:#21262d;
+  --font:'JetBrains Mono','SF Mono','Menlo',-apple-system,'PingFang SC','Microsoft YaHei',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--font);font-size:14px;line-height:1.65;padding:28px 20px 60px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto}
+.up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--flat)}
+a{color:var(--ac)}
+
+/* ---------- Header ---------- */
+.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;
+    border-bottom:2px solid var(--bd);padding-bottom:20px;margin-bottom:26px}
+.hd h1{font-size:23px;font-weight:700;letter-spacing:.5px}
+.hd .sub{color:var(--dim);font-size:12.5px;margin-top:7px}
+.hd .sub b{color:var(--tx);font-weight:600}
+.score-box{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--bd);
+           border-radius:10px;padding:14px 22px;min-width:270px}
+.score-num{font-size:46px;font-weight:800;line-height:1;letter-spacing:-1px}
+.score-meta .lb{font-size:17px;font-weight:700;margin-bottom:3px}
+.score-meta .ds{font-size:11.5px;color:var(--dim);max-width:190px;line-height:1.5}
+.score-scale{font-size:11px;color:var(--faint);margin-top:5px}
+
+/* ---------- Sections ---------- */
+section{margin-bottom:30px}
+h2{font-size:15.5px;font-weight:700;margin-bottom:14px;padding-left:11px;border-left:3px solid var(--ac);
+   display:flex;align-items:center;gap:10px}
+h2 .tag{font-size:11px;font-weight:500;color:var(--faint);border:1px solid var(--bd);border-radius:4px;padding:1px 7px}
+h3{font-size:13px;font-weight:650;color:var(--dim);margin:16px 0 9px}
+
+.panel{background:var(--panel);border:1px solid var(--bd);border-radius:9px;padding:16px 18px}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)} .g6{grid-template-columns:repeat(6,1fr)}
+@media(max-width:900px){.g3,.g4,.g6{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}}
+
+/* ---------- Stat cards ---------- */
+.stat{background:var(--panel);border:1px solid var(--bd);border-radius:8px;padding:12px 14px}
+.stat .k{font-size:11.5px;color:var(--dim);margin-bottom:6px;letter-spacing:.3px}
+.stat .v{font-size:20px;font-weight:700;line-height:1.2}
+.stat .x{font-size:11px;color:var(--faint);margin-top:4px}
+
+/* ---------- Tables ---------- */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;color:var(--dim);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--bd);
+   font-size:11.5px;letter-spacing:.3px;white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid var(--grid);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--panel2)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl-wrap{background:var(--panel);border:1px solid var(--bd);border-radius:9px;padding:4px 6px;overflow-x:auto}
+
+/* ---------- Bars ---------- */
+.bar{height:7px;background:var(--panel2);border-radius:4px;overflow:hidden;position:relative}
+.bar i{display:block;height:100%;border-radius:4px}
+.dimrow{display:grid;grid-template-columns:88px 1fr 62px;gap:11px;align-items:center;margin-bottom:9px}
+.dimrow .nm{font-size:12.5px;color:var(--dim)}
+.dimrow .sc{text-align:right;font-size:12.5px;font-weight:650;font-variant-numeric:tabular-nums}
+
+.subitem{display:grid;grid-template-columns:1fr 76px 46px;gap:9px;font-size:11.5px;color:var(--faint);
+         padding:3px 0 3px 10px;align-items:center}
+.subitem .sv{text-align:right;font-variant-numeric:tabular-nums;color:var(--dim)}
+.subitem .ss{text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---------- Ladder ---------- */
+.ladder-row{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--grid)}
+.ladder-row:last-child{border-bottom:none}
+.ladder-badge{flex:0 0 auto;min-width:62px;text-align:center;font-size:12px;font-weight:700;padding:4px 9px;
+              border-radius:5px;background:var(--panel2);border:1px solid var(--bd)}
+.ladder-stocks{font-size:12px;color:var(--dim);line-height:1.85}
+.chip{display:inline-block;background:var(--panel2);border:1px solid var(--bd);border-radius:4px;
+      padding:1px 8px;margin:0 5px 4px 0;font-size:11.5px}
+
+/* ---------- Cycle ---------- */
+.cycle{display:flex;gap:8px;margin:14px 0 12px;flex-wrap:wrap}
+.cyc{flex:1;min-width:88px;text-align:center;padding:10px 6px;border-radius:7px;border:1px solid var(--bd);
+     background:var(--panel);font-size:12.5px;color:var(--faint);position:relative}
+.cyc.on{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:700;box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}
+.cyc small{display:block;font-size:10px;opacity:.75;margin-top:2px}
+
+/* ---------- Misc ---------- */
+.kv{display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-bottom:1px dashed var(--grid);font-size:12.5px}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--dim)} .kv .v{font-weight:600;font-variant-numeric:tabular-nums}
+ul.list{list-style:none;padding:0}
+ul.list li{position:relative;padding:6px 0 6px 18px;font-size:12.5px;line-height:1.7;border-bottom:1px dashed var(--grid)}
+ul.list li:last-child{border-bottom:none}
+ul.list li:before{content:'▸';position:absolute;left:0;color:var(--ac)}
+ul.risk li:before{content:'!';color:var(--warn);font-weight:700}
+.note{font-size:12px;color:var(--dim);line-height:1.75}
+.pill{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:650;border:1px solid}
+.pill.g{color:var(--up);border-color:var(--up)} .pill.b{color:var(--down);border-color:var(--down)}
+.pill.n{color:var(--dim);border-color:var(--bd)}
+.disc{background:var(--panel);border:1px solid var(--warn);border-left:4px solid var(--warn);border-radius:8px;
+      padding:14px 18px;font-size:12.5px;color:var(--dim);line-height:1.85;margin-top:26px}
+.disc b{color:var(--warn);display:block;margin-bottom:5px;font-size:13px}
+.ft{text-align:center;color:var(--faint);font-size:11.5px;margin-top:22px;line-height:1.9}
+.mini{font-size:11px;color:var(--faint)}
+</style></head><body><div class="wrap">
+
+<div class="hd">
+  <div>
+    <h1>A股量化复盘报告</h1>
+    <div class="sub">交易日 <b>2026-08-06</b> · 上一交易日 <b>2026-08-05</b><br>
+      生成于 2026/8/6 18:18:27 · 耗时 12.4s · 数据源 东方财富 / 腾讯财经</div>
+  </div>
+  <div class="score-box">
+    <div class="score-num flat">4.8</div>
+    <div class="score-meta">
+      <div class="lb flat">中性震荡</div>
+      <div class="ds">多空均衡，控制仓位等待方向</div>
+      <div class="score-scale">量化行情评级 · 满分 10 分</div>
+    </div>
+  </div>
+</div>
+
+<section><h2>量化行情评级 <span class="tag">四维加权 · 1-10 分</span></h2>
+<div class="panel">
+
+  <div class="dimrow">
+    <div class="nm">大盘结构 <span class="mini">30%</span></div>
+    <div class="bar"><i style="width:62.5%;background:var(--ac)"></i></div>
+    <div class="sc flat">6.25</div>
+  </div>
+  <div class="subitem">
+     <span>涨跌比</span>
+     <span class="sv">51.97%</span>
+     <span class="ss flat">5.3</span>
+   </div><div class="subitem">
+     <span>个股中位涨跌</span>
+     <span class="sv">0.00%</span>
+     <span class="ss flat">5.0</span>
+   </div><div class="subitem">
+     <span>核心指数均涨跌</span>
+     <span class="sv">0.07%</span>
+     <span class="ss flat">5.3</span>
+   </div><div class="subitem">
+     <span>涨停-跌停净差</span>
+     <span class="sv">78.00家</span>
+     <span class="ss up">9.4</span>
+   </div>
+<div style="height:12px"></div>
+  <div class="dimrow">
+    <div class="nm">资金流向 <span class="mini">30%</span></div>
+    <div class="bar"><i style="width:16.200000000000003%;background:var(--down)"></i></div>
+    <div class="sc down">1.62</div>
+  </div>
+  <div class="subitem">
+     <span>两市主力净流入</span>
+     <span class="sv">-2633亿</span>
+     <span class="ss down">0.0</span>
+   </div><div class="subitem">
+     <span>板块净流入宽度</span>
+     <span class="sv">23.21%</span>
+     <span class="ss down">1.2</span>
+   </div><div class="subitem">
+     <span>个股资金宽度</span>
+     <span class="sv">35.88%</span>
+     <span class="ss down">3.6</span>
+   </div>
+<div style="height:12px"></div>
+  <div class="dimrow">
+    <div class="nm">短线情绪 <span class="mini">25%</span></div>
+    <div class="bar"><i style="width:65.1%;background:var(--up)"></i></div>
+    <div class="sc up">6.51</div>
+  </div>
+  <div class="subitem">
+     <span>综合晋级率</span>
+     <span class="sv">20.39%</span>
+     <span class="ss down">3.0</span>
+   </div><div class="subitem">
+     <span>炸板率(反向)</span>
+     <span class="sv">20.20%</span>
+     <span class="ss up">8.3</span>
+   </div><div class="subitem">
+     <span>涨停家数</span>
+     <span class="sv">79.00家</span>
+     <span class="ss up">7.9</span>
+   </div><div class="subitem">
+     <span>封板稳固率</span>
+     <span class="sv">49.37%</span>
+     <span class="ss down">0.8</span>
+   </div><div class="subitem">
+     <span>连板高度变化</span>
+     <span class="sv">2.00板</span>
+     <span class="ss up">10.0</span>
+   </div><div class="subitem">
+     <span>昨涨停今日均涨</span>
+     <span class="sv">3.92%</span>
+     <span class="ss up">9.1</span>
+   </div>
+<div style="height:12px"></div>
+  <div class="dimrow">
+    <div class="nm">量能活跃 <span class="mini">15%</span></div>
+    <div class="bar"><i style="width:53.099999999999994%;background:var(--ac)"></i></div>
+    <div class="sc flat">5.31</div>
+  </div>
+  <div class="subitem">
+     <span>成交量/5日均量</span>
+     <span class="sv">1.03倍</span>
+     <span class="ss flat">5.5</span>
+   </div><div class="subitem">
+     <span>激烈换手股占比</span>
+     <span class="sv">5.49%</span>
+     <span class="ss flat">4.8</span>
+   </div><div class="subitem">
+     <span>全市场平均换手</span>
+     <span class="sv">3.20%</span>
+     <span class="ss flat">5.8</span>
+   </div>
+
+</div></section>
+<section><h2>一、大盘结构 <span class="tag">指数 / 广度 / 量能</span></h2>
+
+<div class="grid g4" style="margin-bottom:12px">
+<div class="stat">
+  <div class="k">上证指数</div>
+  <div class="v up">3900.35</div>
+  <div class="x up">+0.57% · 额 1.17万亿</div>
+</div><div class="stat">
+  <div class="k">深证成指</div>
+  <div class="v down">14110.12</div>
+  <div class="x down">-0.24% · 额 1.36万亿</div>
+</div><div class="stat">
+  <div class="k">创业板指</div>
+  <div class="v down">3515.56</div>
+  <div class="x down">-0.55% · 额 6627.43亿</div>
+</div><div class="stat">
+  <div class="k">科创50</div>
+  <div class="v up">1701.29</div>
+  <div class="x up">+0.45% · 额 1237.81亿</div>
+</div>
+</div>
+
+<div class="grid g4" style="margin-bottom:12px">
+  <div class="stat"><div class="k">上涨 / 下跌 / 平</div>
+    <div class="v"><span class="up">2661</span> <span class="mini">/</span> <span class="down">2459</span> <span class="mini">/ 158</span></div>
+    <div class="x">涨跌比 52.0% · 全A 5278 只</div></div>
+  <div class="stat"><div class="k">涨停 / 跌停</div>
+    <div class="v"><span class="up">79</span> <span class="mini">/</span> <span class="down">1</span></div>
+    <div class="x up">净差 +78 家</div></div>
+  <div class="stat"><div class="k">个股中位涨跌</div>
+    <div class="v flat">0.00%</div>
+    <div class="x">均值 +0.54%（体感基准）</div></div>
+  <div class="stat"><div class="k">两市成交额</div>
+    <div class="v">2.53万亿</div>
+    <div class="x">量能持平 · 5日均量的 1.03 倍</div></div>
+</div>
+
+<div class="grid g2">
+  <div class="panel">
+    <h3 style="margin-top:0">涨跌幅分布</h3>
+    <div class="dimrow" style="grid-template-columns:70px 1fr 52px">
+      <div class="nm">跌超7%</div>
+      <div class="bar"><i style="width:0.6%;background:var(--down)"></i></div>
+      <div class="sc">13</div></div><div class="dimrow" style="grid-template-columns:70px 1fr 52px">
+      <div class="nm">跌3~7%</div>
+      <div class="bar"><i style="width:6.9%;background:var(--down)"></i></div>
+      <div class="sc">148</div></div><div class="dimrow" style="grid-template-columns:70px 1fr 52px">
+      <div class="nm">跌0~3%</div>
+      <div class="bar"><i style="width:100.0%;background:color-mix(in srgb,var(--down) 62%,transparent)"></i></div>
+      <div class="sc">2144</div></div><div class="dimrow" style="grid-template-columns:70px 1fr 52px">
+      <div class="nm">平盘</div>
+      <div class="bar"><i style="width:6.2%;background:var(--flat)"></i></div>
+      <div class="sc">133</div></div><div class="dimrow" style="grid-template-columns:70px 1fr 52px">
+      <div class="nm">涨0~3%</div>
+      <div class="bar"><i style="width:77.6%;background:color-mix(in srgb,var(--up) 62%,transparent)"></i></div>
+      <div class="sc">1663</div></div><div class="dimrow" style="grid-template-columns:70px 1fr 52px">
+      <div class="nm">涨3~7%</div>
+      <div class="bar"><i style="width:20.7%;background:var(--up)"></i></div>
+      <div class="sc">444</div></div><div class="dimrow" style="grid-template-columns:70px 1fr 52px">
+      <div class="nm">涨超7%</div>
+      <div class="bar"><i style="width:8.0%;background:var(--up)"></i></div>
+      <div class="sc">171</div></div>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0">量能与换手活跃度 <span class="mini">（放量 = 激烈换手 → 资金活跃）</span></h3>
+    <div class="kv"><span class="k">量能状态</span><span class="v">量能持平（+3.4% vs 5日均）</span></div>
+    <div class="kv"><span class="k">资金活跃度</span><span class="v">中性</span></div>
+    <div class="kv"><span class="k">激烈换手个股（换手≥10%）</span><span class="v">290 只 · 占比 5.5%</span></div>
+    <div class="kv"><span class="k">全市场平均换手</span><span class="v">3.20%</span></div>
+    <div class="kv"><span class="k">量比 ≥1.5 个股</span><span class="v">442 只</span></div>
+    <h3>换手率 TOP5</h3>
+    <div class="mini" style="line-height:2">
+    <span class="chip">N津富 <b class="up">+114.7%</b> 换手77.5%</span><span class="chip">C嘉立创 <b class="down">-11.6%</b> 换手46.9%</span><span class="chip">欣兴工具 <b class="down">-7.8%</b> 换手46.8%</span><span class="chip">万邦医药 <b class="up">+1.9%</b> 换手45.8%</span><span class="chip">陇神戎发 <b class="up">+9.5%</b> 换手38.9%</span>
+    </div>
+  </div>
+</div></section>
+<section><h2>二、资金流向 <span class="tag">板块强弱 = 主力资金净流入 / 流出</span></h2>
+
+<div class="grid g4" style="margin-bottom:12px">
+  <div class="stat"><div class="k">两市主力净流入</div>
+    <div class="v down">-2632.77亿</div>
+    <div class="x">大幅净流出 · 主力资金加速出逃，谨慎为宜</div></div>
+  <div class="stat"><div class="k">个股资金宽度</div>
+    <div class="v">35.9%</div>
+    <div class="x">净流入个股占比（50%为均衡）</div></div>
+  <div class="stat"><div class="k">板块净流入宽度</div>
+    <div class="v">23.2%</div>
+    <div class="x">234 / 1008 个板块净流入</div></div>
+  <div class="stat"><div class="k">净流入 / 净流出总额</div>
+    <div class="v" style="font-size:15px"><span class="up">652.26亿</span> <span class="mini">/</span> <span class="down">-3285.03亿</span></div>
+    <div class="x">北向：沪深港通已于2024年8月起停止盘中实时净买额披露，此处为接</div></div>
+</div>
+
+<h3>板块（概念/题材）· 资金流入 TOP10</h3>
+<div class="tbl-wrap"><table><thead><tr>
+  <th class="num">#</th><th>板块</th><th class="num">涨跌幅</th><th class="num">主力净流入</th><th class="num">净占比</th><th>强弱</th><th>领涨股</th>
+</tr></thead><tbody><tr>
+    <td class="num mini">1</td><td>PCB</td>
+    <td class="num up">+2.66%</td>
+    <td class="num up">64.59亿</td>
+    <td class="num up">+2.59%</td>
+    <td><span class="pill g">强势吸金</span></td>
+    <td class="mini">景旺电子</td></tr><tr>
+    <td class="num mini">2</td><td>通信技术</td>
+    <td class="num up">+1.96%</td>
+    <td class="num up">59.26亿</td>
+    <td class="num up">+1.01%</td>
+    <td><span class="pill g">强势吸金</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">3</td><td>专精特新</td>
+    <td class="num up">+1.08%</td>
+    <td class="num up">54.18亿</td>
+    <td class="num up">+1.23%</td>
+    <td><span class="pill g">强势吸金</span></td>
+    <td class="mini">天孚通信</td></tr><tr>
+    <td class="num mini">4</td><td>CPO概念</td>
+    <td class="num up">+3.20%</td>
+    <td class="num up">39.84亿</td>
+    <td class="num up">+1.27%</td>
+    <td><span class="pill g">强势吸金</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">5</td><td>玻璃基板</td>
+    <td class="num up">+2.60%</td>
+    <td class="num up">36.20亿</td>
+    <td class="num up">+4.33%</td>
+    <td><span class="pill g">强势吸金</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">6</td><td>小盘成长</td>
+    <td class="num up">+0.80%</td>
+    <td class="num up">33.21亿</td>
+    <td class="num up">+1.31%</td>
+    <td><span class="pill g">强势吸金</span></td>
+    <td class="mini">光智科技</td></tr><tr>
+    <td class="num mini">7</td><td>集成电路封测</td>
+    <td class="num up">+3.95%</td>
+    <td class="num up">30.37亿</td>
+    <td class="num up">+6.79%</td>
+    <td><span class="pill g">强势吸金</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">8</td><td>毫米波概念</td>
+    <td class="num up">+1.76%</td>
+    <td class="num up">29.88亿</td>
+    <td class="num up">+3.76%</td>
+    <td><span class="pill g">强势吸金</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">9</td><td>先进封装</td>
+    <td class="num up">+2.42%</td>
+    <td class="num up">29.45亿</td>
+    <td class="num up">+2.20%</td>
+    <td><span class="pill g">强势吸金</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">10</td><td>印制电路板</td>
+    <td class="num up">+3.83%</td>
+    <td class="num up">29.30亿</td>
+    <td class="num up">+2.79%</td>
+    <td><span class="pill g">强势吸金</span></td>
+    <td class="mini">景旺电子</td></tr></tbody></table></div>
+
+<h3>板块（概念/题材）· 资金流出 TOP10</h3>
+<div class="tbl-wrap"><table><thead><tr>
+  <th class="num">#</th><th>板块</th><th class="num">涨跌幅</th><th class="num">主力净流出</th><th class="num">净占比</th><th>强弱</th><th>领涨股</th>
+</tr></thead><tbody><tr>
+    <td class="num mini">1</td><td>融资融券</td>
+    <td class="num up">+0.37%</td>
+    <td class="num down">-372.54亿</td>
+    <td class="num down">-1.63%</td>
+    <td><span class="pill b">资金出逃</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">2</td><td>MSCI中国</td>
+    <td class="num down">-0.11%</td>
+    <td class="num down">-307.57亿</td>
+    <td class="num down">-2.62%</td>
+    <td><span class="pill b">资金出逃</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">3</td><td>富时罗素</td>
+    <td class="num down">-0.09%</td>
+    <td class="num down">-274.12亿</td>
+    <td class="num down">-2.23%</td>
+    <td><span class="pill b">资金出逃</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">4</td><td>HS300_</td>
+    <td class="num down">-0.16%</td>
+    <td class="num down">-246.95亿</td>
+    <td class="num down">-3.30%</td>
+    <td><span class="pill b">资金出逃</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">5</td><td>深股通</td>
+    <td class="num up">+0.25%</td>
+    <td class="num down">-243.27亿</td>
+    <td class="num down">-1.95%</td>
+    <td><span class="pill b">资金出逃</span></td>
+    <td class="mini">天孚通信</td></tr><tr>
+    <td class="num mini">6</td><td>大盘股</td>
+    <td class="num up">+0.25%</td>
+    <td class="num down">-217.42亿</td>
+    <td class="num down">-2.47%</td>
+    <td><span class="pill b">资金出逃</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">7</td><td>标准普尔</td>
+    <td class="num down">-0.10%</td>
+    <td class="num down">-206.74亿</td>
+    <td class="num down">-2.32%</td>
+    <td><span class="pill b">资金出逃</span></td>
+    <td class="mini">长电科技</td></tr><tr>
+    <td class="num mini">8</td><td>深成500</td>
+    <td class="num down">-0.28%</td>
+    <td class="num down">-200.41亿</td>
+    <td class="num down">-2.50%</td>
+    <td><span class="pill b">资金出逃</span></td>
+    <td class="mini">天孚通信</td></tr><tr>
+    <td class="num mini">9</td><td>人工智能</td>
+    <td class="num up">+0.29%</td>
+    <td class="num down">-177.93亿</td>
+    <td class="num down">-3.91%</td>
+    <td><span class="pill b">资金出逃</span></td>
+    <td class="mini">工业富联</td></tr><tr>
+    <td class="num mini">10</td><td>AH股</td>
+    <td class="num down">-0.22%</td>
+    <td class="num down">-119.84亿</td>
+    <td class="num down">-3.31%</td>
+    <td><span class="pill b">资金出逃</span></td>
+    <td class="mini">胜宏科技</td></tr></tbody></table></div>
+
+<div class="grid g2" style="margin-top:12px">
+  <div><h3 style="margin-top:0">个股主力净流入 TOP8</h3>
+  <div class="tbl-wrap"><table><thead><tr><th>名称</th><th class="num">涨跌</th><th class="num">主力净流入</th><th>行业</th></tr></thead>
+  <tbody><tr><td>科创200</td>
+    <td class="num up">+1.79%</td>
+    <td class="num up">27.40亿</td><td class="mini">-</td></tr><tr><td>长电科技</td>
+    <td class="num up">+10.00%</td>
+    <td class="num up">22.29亿</td><td class="mini">半导体</td></tr><tr><td>科创材料</td>
+    <td class="num up">+2.92%</td>
+    <td class="num up">21.76亿</td><td class="mini">-</td></tr><tr><td>科创成长</td>
+    <td class="num up">+2.09%</td>
+    <td class="num up">14.01亿</td><td class="mini">-</td></tr><tr><td>沪财中小</td>
+    <td class="num up">+1.16%</td>
+    <td class="num up">12.48亿</td><td class="mini">-</td></tr><tr><td>沪互联+</td>
+    <td class="num up">+0.12%</td>
+    <td class="num up">11.45亿</td><td class="mini">-</td></tr><tr><td>天孚通信</td>
+    <td class="num up">+3.89%</td>
+    <td class="num up">11.37亿</td><td class="mini">通信设备</td></tr><tr><td>景旺电子</td>
+    <td class="num up">+10.00%</td>
+    <td class="num up">10.47亿</td><td class="mini">元件</td></tr></tbody></table></div></div>
+
+  <div><h3 style="margin-top:0">个股主力净流出 TOP8</h3>
+  <div class="tbl-wrap"><table><thead><tr><th>名称</th><th class="num">涨跌</th><th class="num">主力净流出</th><th>行业</th></tr></thead>
+  <tbody><tr><td>银河99</td>
+    <td class="num down">-0.24%</td>
+    <td class="num down">-149.33亿</td><td class="mini">-</td></tr><tr><td>全R成长</td>
+    <td class="num up">+0.34%</td>
+    <td class="num down">-106.63亿</td><td class="mini">-</td></tr><tr><td>ESG 100</td>
+    <td class="num down">-0.48%</td>
+    <td class="num down">-106.41亿</td><td class="mini">-</td></tr><tr><td>全指工业</td>
+    <td class="num down">-1.09%</td>
+    <td class="num down">-105.61亿</td><td class="mini">-</td></tr><tr><td>消费服务</td>
+    <td class="num down">-0.75%</td>
+    <td class="num down">-104.34亿</td><td class="mini">-</td></tr><tr><td>市值百强</td>
+    <td class="num up">+0.13%</td>
+    <td class="num down">-103.29亿</td><td class="mini">-</td></tr><tr><td>沪股通</td>
+    <td class="num up">+0.41%</td>
+    <td class="num down">-83.25亿</td><td class="mini">-</td></tr><tr><td>全指成长</td>
+    <td class="num up">+0.15%</td>
+    <td class="num down">-80.39亿</td><td class="mini">-</td></tr></tbody></table></div></div>
+</div></section>
+<section><h2>三、短线情绪 <span class="tag">量化连板晋级率（代码级精确匹配）</span></h2>
+
+<div class="cycle">
+<div class="cyc ">冰点<small></small></div><div class="cyc ">退潮<small></small></div><div class="cyc on">修复<small>当前</small></div><div class="cyc ">发酵<small></small></div><div class="cyc ">高潮<small></small></div>
+</div>
+<div class="panel" style="margin-bottom:12px">
+  <div class="note"><b style="color:var(--ac)">修复期判定：</b>接力率处于中性区间，市场在分歧中寻找方向，情绪处于修复整理期。</div>
+  <div class="note" style="margin-top:7px"><b style="color:var(--warn)">应对：</b>修复期以低吸和试仓为主，控制单笔仓位，等待主线明确。</div>
+</div>
+
+<div class="grid g6" style="margin-bottom:12px">
+  <div class="stat"><div class="k">综合晋级率</div><div class="v flat">20.4%</div>
+    <div class="x">昨涨停 103 → 今仍涨停 21</div></div>
+  <div class="stat"><div class="k">首板晋级率</div><div class="v down">12.7%</div>
+    <div class="x">首板 → 2连板</div></div>
+  <div class="stat"><div class="k">连板晋级率</div><div class="v flat">37.5%</div>
+    <div class="x">12/32（2板及以上）</div></div>
+  <div class="stat"><div class="k">炸板率</div><div class="v up">20.2%</div>
+    <div class="x">炸板 20 / 涨停 79</div></div>
+  <div class="stat"><div class="k">最高连板</div><div class="v up">10 板</div>
+    <div class="x">昨日最高 8 板</div></div>
+  <div class="stat"><div class="k">封板稳固率</div><div class="v">49.4%</div>
+    <div class="x">全天未炸 39 / 79</div></div>
+</div>
+
+<div class="grid g2">
+  <div class="panel"><h3 style="margin-top:0">连板梯队（今日）</h3>
+    <div class="ladder-row">
+      <div class="ladder-badge up">10板 ×1</div>
+      <div class="ladder-stocks"><span class="chip">爱丽家居</span></div>
+    </div><div class="ladder-row">
+      <div class="ladder-badge up">5板 ×1</div>
+      <div class="ladder-stocks"><span class="chip">豪尔赛</span></div>
+    </div><div class="ladder-row">
+      <div class="ladder-badge up">4板 ×2</div>
+      <div class="ladder-stocks"><span class="chip">风范股份</span><span class="chip">欣天科技</span></div>
+    </div><div class="ladder-row">
+      <div class="ladder-badge ">3板 ×9</div>
+      <div class="ladder-stocks"><span class="chip">凯撒文化</span><span class="chip">大晟文化</span><span class="chip">江钨装备</span><span class="chip">百花医药</span><span class="chip">云南锗业</span><span class="chip">宝鼎科技</span><span class="chip">沃格光电</span><span class="chip">博杰股份</span><span class="chip">汇绿生态</span></div>
+    </div><div class="ladder-row">
+      <div class="ladder-badge ">2板 ×9</div>
+      <div class="ladder-stocks"><span class="chip">大立科技</span><span class="chip">金一文化</span><span class="chip">中电电机</span><span class="chip">博彦科技</span><span class="chip">百合花</span><span class="chip">有研新材</span><span class="chip">江化微</span><span class="chip">和远气体</span><span class="chip">中巨芯-U</span></div>
+    </div><div class="ladder-row">
+      <div class="ladder-badge ">1板 ×57</div>
+      <div class="ladder-stocks"><span class="chip">奔图科技</span><span class="chip">锴威特</span><span class="chip">新北洋</span><span class="chip">惠天热电</span><span class="chip">华升股份</span><span class="chip">通宇通讯</span><span class="chip">高争民爆</span><span class="chip">卓翼科技</span><span class="chip">新能泰山</span><span class="chip">飞天诚信</span><span class="chip">泛微网络</span><span class="chip">恒宝股份</span><span class="chip">楚天龙</span><span class="chip">天融信</span><span class="mini">…等57家</span></div>
+    </div>
+  </div>
+
+  <div class="panel"><h3 style="margin-top:0">分层晋级率明细</h3>
+    <div class="tbl-wrap" style="background:transparent;border:none;padding:0">
+    <table><thead><tr><th>层级</th><th class="num">基数</th><th class="num">晋级</th><th class="num">晋级率</th><th class="num">该层今日均涨</th></tr></thead>
+    <tbody><tr>
+      <td>8连板 → 9连板</td><td class="num">1</td><td class="num">0</td>
+      <td class="num down">0.0%</td>
+      <td class="num down">-6.65%</td>
+    </tr><tr>
+      <td>4连板 → 5连板</td><td class="num">2</td><td class="num">1</td>
+      <td class="num up">50.0%</td>
+      <td class="num up">+5.45%</td>
+    </tr><tr>
+      <td>3连板 → 4连板</td><td class="num">2</td><td class="num">2</td>
+      <td class="num up">100.0%</td>
+      <td class="num up">+14.97%</td>
+    </tr><tr>
+      <td>2连板 → 3连板</td><td class="num">27</td><td class="num">9</td>
+      <td class="num flat">33.3%</td>
+      <td class="num up">+5.93%</td>
+    </tr><tr>
+      <td>首板 → 2连板</td><td class="num">71</td><td class="num">9</td>
+      <td class="num down">12.7%</td>
+      <td class="num up">+2.96%</td>
+    </tr></tbody></table></div>
+    <h3>昨日涨停股今日表现（打板溢价）</h3>
+    <div class="kv"><span class="k">平均涨跌幅</span><span class="v up">+3.92%</span></div>
+    <div class="kv"><span class="k">收红比例</span><span class="v">78.2%（101 只样本）</span></div>
+    <div class="kv"><span class="k">表现最好</span><span class="v mini">中巨芯-U +20.0% · 欣天科技 +20.0% · 金一文化 +10.1%</span></div>
+    <div class="kv"><span class="k">表现最差</span><span class="v mini">中公教育 -7.7% · 传智教育 -6.7% · 天下秀 -6.0%</span></div>
+  </div>
+</div>
+
+<h3>涨停题材聚集度 <span class="mini">（TOP3 集中度 27.8% · 最强主线：通信设备）</span></h3>
+<div class="tbl-wrap"><table><thead><tr><th>题材/行业</th><th class="num">涨停数</th><th class="num">最高板</th><th>代表个股</th></tr></thead>
+<tbody><tr><td>通信设备</td><td class="num">8</td>
+  <td class="num up">4</td>
+  <td class="mini">欣天科技(4)、汇绿生态(3)、通宇通讯(1)、恒宝股份(1)、楚天龙(1)、武汉凡谷(1)</td></tr><tr><td>化学制品</td><td class="num">7</td>
+  <td class="num ">2</td>
+  <td class="mini">百合花(2)、和远气体(2)、高争民爆(1)、键邦股份(1)、宏柏新材(1)、中欣氟材(1)</td></tr><tr><td>煤炭开采</td><td class="num">7</td>
+  <td class="num ">1</td>
+  <td class="mini">昊华能源(1)、大有能源(1)、平煤股份(1)、淮北矿业(1)、兖矿能源(1)、辽宁能源(1)</td></tr><tr><td>元件</td><td class="num">6</td>
+  <td class="num up">3</td>
+  <td class="mini">宝鼎科技(3)、景旺电子(1)、方正科技(1)、科翔股份(1)、威尔高(1)、泰晶科技(1)</td></tr><tr><td>专用设备</td><td class="num">4</td>
+  <td class="num up">3</td>
+  <td class="mini">江钨装备(3)、北方股份(1)、泰坦股份(1)、蜀道装备(1)</td></tr><tr><td>计算机设</td><td class="num">4</td>
+  <td class="num ">1</td>
+  <td class="mini">奔图科技(1)、新北洋(1)、飞天诚信(1)、恒银科技(1)</td></tr><tr><td>软件开发</td><td class="num">4</td>
+  <td class="num ">1</td>
+  <td class="mini">泛微网络(1)、天融信(1)、吉大正元(1)、任子行(1)</td></tr><tr><td>半导体</td><td class="num">3</td>
+  <td class="num ">2</td>
+  <td class="mini">有研新材(2)、锴威特(1)、长电科技(1)</td></tr><tr><td>电子化学</td><td class="num">3</td>
+  <td class="num ">2</td>
+  <td class="mini">江化微(2)、中巨芯-U(2)、天通股份(1)</td></tr><tr><td>电网设备</td><td class="num">2</td>
+  <td class="num up">4</td>
+  <td class="mini">风范股份(4)、新能泰山(1)</td></tr></tbody></table></div>
+</section>
+<section><h2>四、隔日推演 <span class="tag">筹码 + 资金 + 情绪 三因子合成</span></h2>
+
+<div class="grid g3" style="margin-bottom:12px">
+<div class="stat">
+  <div class="k">筹码结构</div>
+  <div class="v">2 <span class="mini">/ 4</span></div>
+  <div class="bar" style="margin:7px 0 6px"><i style="width:50%;background:var(--ac)"></i></div>
+  <div class="x" style="white-space:normal;line-height:1.65">封板质量偏弱（稳固率 49%、炸板率 20%），隔日容易低开分歧。</div>
+</div><div class="stat">
+  <div class="k">资金动向</div>
+  <div class="v">1 <span class="mini">/ 4</span></div>
+  <div class="bar" style="margin:7px 0 6px"><i style="width:25%;background:var(--down)"></i></div>
+  <div class="x" style="white-space:normal;line-height:1.65">主力大幅净流出 2632.77 亿，资金呈系统性撤离，次日大概率承压。</div>
+</div><div class="stat">
+  <div class="k">情绪周期</div>
+  <div class="v">3 <span class="mini">/ 4</span></div>
+  <div class="bar" style="margin:7px 0 6px"><i style="width:75%;background:var(--up)"></i></div>
+  <div class="x" style="white-space:normal;line-height:1.65">修复期：综合晋级率 20.4%、首板晋级率 12.7%、最高 10 板（昨 8 板）。接力率处于中性区间，市场在分歧中寻找方向，情绪处于修复整理期。</div>
+</div>
+</div>
+
+<div class="panel" style="margin-bottom:12px">
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+    <span class="pill b" style="font-size:13px;padding:4px 14px">次日倾向：中性偏空</span>
+    <span class="mini">三因子合成分 2 / 4</span>
+  </div>
+  <div class="note">资金流出叠加情绪走弱，次日承压概率较高。</div>
+  <div class="note" style="margin-top:6px"><b style="color:var(--ac)">开盘推演：</b>预期低开或高开回落，反弹更适合减仓而非加仓。</div>
+</div>
+
+<div class="grid g2">
+  <div class="panel"><h3 style="margin-top:0">重点跟踪主线</h3>
+    <div class="note" style="margin-bottom:8px"><b style="color:var(--up)">资金+涨停双确认：</b>通信技术</div>
+    <ul class="list"><li><b>通信设备</b> <span class="mini">[涨停聚集]</span> — 8 家涨停，最高 4 板<br><span class="mini">欣天科技(4板)、汇绿生态(3板)、通宇通讯(1板)、恒宝股份(1板)、楚天龙(1板)、武汉凡谷(1板)</span></li><li><b>化学制品</b> <span class="mini">[涨停聚集]</span> — 7 家涨停，最高 2 板<br><span class="mini">百合花(2板)、和远气体(2板)、高争民爆(1板)、键邦股份(1板)、宏柏新材(1板)、中欣氟材(1板)</span></li><li><b>煤炭开采</b> <span class="mini">[涨停聚集]</span> — 7 家涨停，最高 1 板<br><span class="mini">昊华能源(1板)、大有能源(1板)、平煤股份(1板)、淮北矿业(1板)、兖矿能源(1板)、辽宁能源(1板)</span></li><li><b>元件</b> <span class="mini">[涨停聚集]</span> — 6 家涨停，最高 3 板<br><span class="mini">宝鼎科技(3板)、景旺电子(1板)、方正科技(1板)、科翔股份(1板)、威尔高(1板)、泰晶科技(1板)</span></li><li><b>专用设备</b> <span class="mini">[涨停聚集]</span> — 4 家涨停，最高 3 板<br><span class="mini">江钨装备(3板)、北方股份(1板)、泰坦股份(1板)、蜀道装备(1板)</span></li><li><b>PCB</b> <span class="mini">[资金流入]</span> — 主力净流入 64.59 亿，板块涨 2.66%<br><span class="mini">景旺电子</span></li><li><b>通信技术</b> <span class="mini">[资金流入]</span> — 主力净流入 59.26 亿，板块涨 1.96%<br><span class="mini">长电科技</span></li><li><b>专精特新</b> <span class="mini">[资金流入]</span> — 主力净流入 54.18 亿，板块涨 1.08%<br><span class="mini">天孚通信</span></li></ul>
+  </div>
+  <div class="panel"><h3 style="margin-top:0">风险提示</h3>
+    <ul class="list risk"><li>两市主力净流出 2632.77 亿，量能与资金背离。</li></ul>
+  </div>
+</div>
+
+<div class="panel" style="margin-top:12px"><h3 style="margin-top:0">操作纪律（机械执行项）</h3>
+  <ul class="list"><li>评级中性：半仓以下运作，等待方向明确再加码。</li><li>修复期纪律：小仓位试错，单笔仓位不超过总仓位的两成。</li><li>次日若低开且分时不能收复均价线，减仓优先于死扛。</li><li>严格执行个股止损（建议单票 -5% ~ -7%），不因为“评级偏强”放松风控。</li></ul>
+</div></section>
+
+<div class="note" style="padding:10px 0">iFinD 增强模块未启用：iFinD 密钥未配置（mcp_config.json 中仍是占位符）。前往 https://mcp.51ifind.com/#/profile 的「个人中心 → 密钥」获取，填入 /Users/chenxiao/.workbuddy/skills/ifind-finance-data/mcp_config.json</div>
+
+<div class="disc"><b>风险提示与免责声明</b>本报告由程序自动抓取公开财经数据并按预设量化规则生成，所有评级、推演与策略描述均为数据规律的机械归纳，不构成任何投资建议。AI 分析仅作参考，请务必结合自身研究独立判断，风险自担。</div>
+<div class="ft">本文件由 A股自动化量化复盘工具生成 · 单文件离线可读 · 配色主题「深色终端风」<br>
+修改 config.json 中 theme.active 即可切换配色，也可在 presets 中自定义十六进制色值</div>
+</div></body></html>
